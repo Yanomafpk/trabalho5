@@ -7,37 +7,25 @@ def draw_plot():
     df = pd.read_csv('epa-sea-level.csv')
     
     # Create scatter plot
-    x = df['Year']
-    y = df['CSIRO Adjusted Sea Level']
-
-    plt.scatter(x, y)
-    plt.xlabel('Year')
-    plt.ylabel('CSIRO Adjusted Sea Level')
-    plt.title('Sea Level Changes Over Time')
-    plt.savefig('bar_plot.png')
-    return plt
+    plt.scatter(df['Year'], df['CSIRO Adjusted Sea Level'])
 
     # Create first line of best fit
-    
-    res = stats.linregress(x, y)
-
-    plt.scatter(x, y, label='Original Data')
-    plt.plot(x, res.intercept + res.slope * x, 'r', label=f'Fitted Line (slope={res.slope:.2f})')
-    plt.xlabel('Year')
-    plt.ylabel('CSIRO Adjusted Sea Level')
-    plt.title('Sea Level Changes Over Time')
-
-    # Add legend
-    plt.legend()
-
-    # Show plot
-    plt.show()
+    slope, intercept, r_value, p_value, std_err = linregress(df['Year'], df['CSIRO Adjusted Sea Level'])
+    x_values = range(df['Year'].min(), 2051)
+    y_values = [intercept + slope * x for x in x_values]
+    plt.plot(x_values, y_values, 'r')
 
     # Create second line of best fit
-
+    df_2000 = df[df['Year'] >= 2000]
+    slope, intercept, r_value, p_value, std_err = linregress(df_2000['Year'], df_2000['CSIRO Adjusted Sea Level'])
+    x_values = range(df_2000['Year'].min(), 2051)
+    y_values = [intercept + slope * x for x in x_values]
+    plt.plot(x_values, y_values, 'g')
 
     # Add labels and title
-
+    plt.xlabel("Year")
+    plt.ylabel("Sea Level (inches)")
+    plt.title("Rise in Sea Level")
     
     # Save plot and return data for testing (DO NOT MODIFY)
     plt.savefig('sea_level_plot.png')
